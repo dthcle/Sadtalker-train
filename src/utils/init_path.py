@@ -39,10 +39,10 @@ def init_path(checkpoint_dir, config_dir, size=512, old_version=False, preproces
     sadtalker_paths['use_safetensor'] =  use_safetensor # os.path.join(config_dir, 'auido2exp.yaml')
 
     if 'full' in preprocess:
-        sadtalker_paths['mappingnet_checkpoint'] = os.path.join('/home/yckj3822/img2video/SadTalker-main/checkpoints', 'mapping_00109-model.pth.tar')
+        sadtalker_paths['mappingnet_checkpoint'] = os.path.join(os.path.dirname(checkpoint_dir), 'mapping_00109-model.pth.tar')
         sadtalker_paths['facerender_yaml'] = os.path.join(config_dir, 'facerender_still.yaml')
     else:
-        sadtalker_paths['mappingnet_checkpoint'] = os.path.join('/home/yckj3822/img2video/SadTalker-main/checkpoints', 'mapping_00229-model.pth.tar')
+        sadtalker_paths['mappingnet_checkpoint'] = os.path.join(os.path.dirname(checkpoint_dir), 'mapping_00229-model.pth.tar')
         sadtalker_paths['facerender_yaml'] = os.path.join(config_dir, 'facerender.yaml')
 
     return sadtalker_paths

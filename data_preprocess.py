@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     #step2： 这将花费相当长的时间
     #读取预处理模型
-    checkpoint_dir = os.path.join(root_path, 'checkpoints')
+    checkpoint_dir = os.path.join(root_path, "..", 'checkpoints')
     config_dir = os.path.join(root_path, 'src', 'config')
     size = 256 
     old_version = False

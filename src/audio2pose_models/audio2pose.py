@@ -24,7 +24,8 @@ class Audio2Pose(nn.Module):
     def forward(self, x):
 
         batch = {}
-        # TODO 此处如果进行squeeze则会报shape不正确的错误 因为squeeze会去除一个维度的信息 但是如果不进行squeeze是否会导致训练结果与预期不符？
+        # 此处如果进行squeeze则会报shape不正确的错误 因为squeeze会去除一个维度的信息 但是如果不进行squeeze是否会导致训练结果与预期不符？
+        # squeeze()是用于去除仅含有一条数据的维度 本质就是调整维度数量而不改变数据内容的一个函数
         coeff_gt = x['gt'].cuda()           #bs frame_len+1 73
         # coeff_gt = x['gt'].cuda().squeeze(0)           #bs frame_len+1 73
 
