@@ -1,3 +1,4 @@
+import os
 from src.utils.get_file import Get_img_paths
 from multiprocessing.pool import Pool
 from functools import partial
@@ -6,7 +7,7 @@ import subprocess,cv2,os
 from src.utils.init_path import init_path
 from src.utils.preprocess import CropAndExtract
 from concurrent.futures import ThreadPoolExecutor, as_completed
-os.environ['CUDA_VISIBLE_DEVICES'] ="6"
+# os.environ['CUDA_VISIBLE_DEVICES'] ="6"
 
 
 
@@ -55,30 +56,32 @@ def mp_handler(job):
 if __name__ == '__main__':
     
     #预处理结果保存的路径
-    preprocess_save_dir = '/metahuman/wyt/debug/'
+    root_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run_cfg")
+    preprocess_save_dir = os.path.join('preprocess')
     os.makedirs(preprocess_save_dir, exist_ok= True)
     
     
     #step1:提取audio
-    input_dir = 'your video root dir'
-    video_org_dir = '/metahuman/data/'
-    audio_save_dir =  preprocess_save_dir +  '/audio/'
+    input_dir = os.path.join(preprocess_save_dir, 'dataset')
+    video_org_dir = input_dir
+    # video_org_dir = 'run_cfg/video_org_dir'
+    audio_save_dir = os.path.join(preprocess_save_dir, "audio")
     video_paths = Get_img_paths(input_dir, ext = 'mp4')
     extract_audios_from_videos_multi(video_paths, audio_save_dir, video_org_dir)
 
     #step2： 这将花费相当长的时间
     #读取预处理模型
-    checkpoint_dir = './checkpoints'
-    config_dir = './src/config/'
+    checkpoint_dir = os.path.join(root_path, 'checkpoints')
+    config_dir = os.path.join(root_path, 'src', 'config')
     size = 256 
     old_version = False
-    preprocess = 'crop'
+    preprocess = 'full'
     sadtalker_paths = init_path(checkpoint_dir, config_dir, size, old_version, preprocess)
     ngpu = 1 #采用GPU的数量
     fa = [CropAndExtract(sadtalker_paths, device='cuda:{}'.format(id)) for id in range(ngpu)]  #构建GPU
 
     pose_save_dir =  preprocess_save_dir +  '/pose/'  #保存ρ的路径
-    os.makedirs(preprocess_save_dir, exist_ok= True)
+    os.makedirs(pose_save_dir, exist_ok= True)
     jobs = [(vfile, pose_save_dir, video_org_dir, i%ngpu) for i, vfile in enumerate(video_paths)]
     p = ThreadPoolExecutor(ngpu)
     futures = [p.submit(mp_handler, j) for j in jobs]

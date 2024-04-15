@@ -27,26 +27,30 @@ def parse_audio_length(audio_length, sr, fps):
 
 def save_orig_mel(wavpath):
     try:
-        wav = audio.load_wav(wavpath, 16000) 
+        wav = audio.load_wav(wavpath, 16000)
+        print("load_wav successfully!")
         wav_length, num_frames = parse_audio_length(len(wav), 16000, 25)    #将音频重采样并对准到25fps
         wav = crop_pad_audio(wav, wav_length)
         orig_mel = audio.melspectrogram(wav).T    #得到特征
         diranme = os.path.dirname(wavpath)
         save_path = diranme.replace(org_dir,save_dir)
         os.makedirs(save_path, exist_ok= True)
-        save_path = save_path + '/orig_mel.npy'
+        save_path = os.path.join(save_path, 'orig_mel.npy')
         np.save(save_path,orig_mel)
     except:
         return 
 
 
-inputs_path = '/metahuman/wyt/preprocess/audio/2dhighresolution_230606_wav.txt'  #wav_dir
+root_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run_cfg")
+preprocess_save_dir = os.path.join(root_path, "preprocess")
+inputs_path = os.path.join(preprocess_save_dir, 'audio')
+               #'  /metahuman/wyt/preprocess/audio/2dhighresolution_230606_wav.txt')  #wav_dir
 wav_paths = Get_img_paths(inputs_path)
 
-org_dir = '/metahuman/wyt/preprocess/audio/'
-save_dir = '/metahuman/wyt/preprocess/orig_mel/'
+org_dir = os.path.join(preprocess_save_dir, 'audio')
+save_dir = os.path.join(preprocess_save_dir, 'orig_mel')
 
-with Pool(processes=16) as p:  #os.cpu_count()
+with Pool(processes=1) as p:  #os.cpu_count()
     with tqdm(total=len(wav_paths)) as pbar:
         func = partial(save_orig_mel)
         for v in p.imap_unordered(func, wav_paths):

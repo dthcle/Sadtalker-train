@@ -24,7 +24,10 @@ class Audio2Pose(nn.Module):
     def forward(self, x):
 
         batch = {}
-        coeff_gt = x['gt'].cuda().squeeze(0)           #bs frame_len+1 73
+        # TODO 此处如果进行squeeze则会报shape不正确的错误 因为squeeze会去除一个维度的信息 但是如果不进行squeeze是否会导致训练结果与预期不符？
+        coeff_gt = x['gt'].cuda()           #bs frame_len+1 73
+        # coeff_gt = x['gt'].cuda().squeeze(0)           #bs frame_len+1 73
+
         batch['pose_motion_gt'] = coeff_gt[:, 1:, 64:70] - coeff_gt[:, :1, 64:70] #bs frame_len 6
         batch['ref'] = coeff_gt[:, 0, 64:70]  #bs  6  ##第一帧 参考帧
         # batch['class'] = x['class'].squeeze(0).cuda() # bs

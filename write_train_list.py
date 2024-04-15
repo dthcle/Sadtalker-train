@@ -13,10 +13,12 @@ def write_txt(dirs, txtdir):
 
 
 if __name__ == '__main__':
-    data_dir = '/metahuman/wyt/debug/images'
-    txt_dir = '/metahuman/wyt/debug/images.txt'
+    root_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run_cfg")
+    preprocess_save_dir = os.path.join(root_path, "preprocess")
+    data_dir = os.path.join(preprocess_save_dir, 'images')
+    txt_path = os.path.join(preprocess_save_dir, 'images.txt')
     data_dirs = Get_img_dirs(data_dir)
     data_dirs.sort()
-    write_txt(data_dirs, txt_dir)
+    write_txt(data_dirs, txt_path)
 
         

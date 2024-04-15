@@ -28,6 +28,7 @@ import logging
 from src.utils.logger import create_logger
 logger = logging.getLogger("poseVae_train") 
 from src.utils.get_file import Get_img_paths
+from src.test_audio2coeff import load_cpk
 
 
 class My_Dataset(Dataset):
@@ -197,8 +198,6 @@ class My_Dataset(Dataset):
             indiv_mels = torch.FloatTensor(indiv_mels)
             label = int(label)
             return indiv_mels, ref_coeff, window_coeff_3dmm ,label
-
-
 
 
 if __name__ == '__main__':
